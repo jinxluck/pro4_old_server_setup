@@ -60,7 +60,7 @@ RUN chown -R nonrootuser:nonrootuser $APP_HOME
 # Create a sudo'er without required password
 #RUN adduser -D -s /bin/sh dude
 #RUN echo "dude ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dude
-USER nonrootuser
+#USER nonrootuser
 ENTRYPOINT ["/usr/src/webinterface/entrypoint.sh"]
 
 

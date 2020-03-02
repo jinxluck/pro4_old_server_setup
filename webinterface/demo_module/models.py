@@ -114,3 +114,42 @@ class Test2(models.Model):
     """
 
     inbound_payload = JSONField()
+
+
+# database inbound structure
+class Inbound_teststand_package(models.Model):
+    class Meta:
+        verbose_name_plural = "Teststand packages"
+
+    Timestamp = models.CharField(max_length=200, primary_key=True)
+    NODELETE = models.BooleanField(default=False)
+    Sent_by = models.CharField(max_length=200)
+    command_list = ArrayField(models.CharField(max_length=20), null=True, blank=True)
+    Validation_failed = models.BooleanField(default=True)
+    # obsolete?
+    #embedded_file_format = models.CharField(max_length=20, null=True, blank=True)
+    #embedded_file = models.BinaryField(null=True, blank=True)
+
+class Test_stand_data(models.Model):
+    class Meta:
+        verbose_name_plural = "Teststand data types"
+
+    Data_name = models.CharField(max_length=100, null=True)
+    Data_points = JSONField(blank=True, null=True)
+    Inbound_teststand_package = models.ForeignKey(Inbound_teststand_package, on_delete=models.CASCADE)
+
+class Test_stand_parameters(models.Model):
+    class Meta:
+        verbose_name_plural = "Teststand parameters"
+
+    Parameter_name = models.CharField(max_length=100, default="Empty")
+    Parameter_value = models.CharField(max_length=100, default="Empty")
+    Inbound_teststand_package = models.ForeignKey(Inbound_teststand_package, on_delete=models.CASCADE)
+
+# Idea for later use (no_delete & timestamp):
+# class ND_TS(models.Model):
+#     class Meta:
+#         verbose_name_plural = "Teststand NoDelete & TimeStamp"
+#
+#     TimeStamp = models.DateTimeField(auto_now_add='True')
+#     NoDelete = models.BooleanField(default=False)

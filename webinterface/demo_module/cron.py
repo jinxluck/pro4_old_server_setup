@@ -1,4 +1,4 @@
-from .models import Testdatabase
+from .models import Inbound_teststand_package
 
 # Explanation:
 # This function will be called and run when the crontab scheduler runs. The run schedule is defined in "settings.py"
@@ -7,6 +7,5 @@ from .models import Testdatabase
 # ".delete()" If the field NODELETE is "False" th object will be deleted
 
 def Database_clean_up():
-
     print("Running Cron, whatup bitches...")
-    Testdatabase.objects.filter(NODELETE=False).delete()
+    Inbound_teststand_package.objects.filter(NODELETE=False).delete()

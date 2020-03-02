@@ -67,5 +67,5 @@ class MqttClient():
     def disconnect(self):
         return self.client.disconnect()
 
-    # def async_loop(self):
-    #     self.client.loop_start()
+    def async_loop(self):
+        self.client.loop_start()

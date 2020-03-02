@@ -24,18 +24,10 @@ SECRET_KEY = 'cfh16z33oa@=vl^*5mfhsy&#4b6()l^usx3l#xo8llo)d=g6ox'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '192.168.99.100',
-    'auteam2.mooo.com',
-    '119.74.164.55',
-    '192.168.1.7',
-    'webinterface',
-]
+# Should be changed back to original?
+ALLOWED_HOSTS = ['*']
 
 # Application definition
-
 INSTALLED_APPS = [
     'demo_module',
     'django_crontab',
@@ -59,6 +51,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRONJOBS = [
     # The scheduler is set to run the command "Database_clean_up" every minute of all hours of the day
     ('*/1 * * * *', 'database_poc.cron.Database_clean_up', '2>&1'),
+    ('*/1 * * * *', 'demo_module.cron.Database_clean_up', '2>&1'),
 ]
 
 MIDDLEWARE = [
