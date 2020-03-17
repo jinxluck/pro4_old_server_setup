@@ -7,11 +7,12 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import ListView
 from django.template import loader
+from datetime import datetime
 
 from demo_module.messagehandler.client import MqttClient
 from demo_module.messagehandler import protocol
 from .forms import TestForm
-from .models import Result, Status
+from .models import Result, Status, Inbound_teststand_package, ND_TS
 
 import json
 
@@ -31,6 +32,18 @@ def demo_make_test(request):
             print("Form submitted!")
 
             template = loader.get_template('demo_module/message_sent.html')
+
+            #------- Temporary saving table ------#
+            # save time sent
+            temp = ND_TS()
+            timestamp = datetime.now()
+            temp.TimeStamp = timestamp.strftime("%x-%I:%M:%S")
+            temp.ID = 0
+
+            # save no delete field
+            temp.NoDelete = form.cleaned_data.get("no_delete")
+            temp.save()
+            # ------- -------------------- ------#
 
             # Attempt to transmit MQTT-message based on validated form data
             if (transmit_mqtt(form.cleaned_data)):
@@ -109,10 +122,13 @@ def transmit_mqtt(form_obj):
     return rc
 
 
-class ResultListView(ListView):
-    model = Result
-    queryset = Result.objects.all().order_by('-job_received_time')
+# class ResultListView(ListView):
+#     model = Result
+#     queryset = Result.objects.all().order_by('-job_received_time')
 
+class ResultListView(ListView):
+    model = Inbound_teststand_package
+    queryset = Inbound_teststand_package.objects.all().order_by('-Timestamp')
 
 class StatusListView(ListView):
     model = Status

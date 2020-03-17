@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
-import time
+from datetime import datetime
 
 class Status(models.Model):
     """
@@ -24,6 +24,7 @@ class Status(models.Model):
         ('610', '610 Device in hibernation'),
         ('620', '620 Device off'),
     ]
+    ID = models.IntegerField(primary_key = True)
 
     latest_status_code = models.CharField(max_length=3, choices=STATUS_CODES, default='200')
     latest_status_update = models.DateTimeField(auto_now='True')
@@ -121,14 +122,14 @@ class Inbound_teststand_package(models.Model):
     class Meta:
         verbose_name_plural = "Teststand packages"
 
-    Timestamp = models.CharField(max_length=200, primary_key=True)
+    Timestamp = models.CharField(max_length=200, null=True, blank=True)
     NODELETE = models.BooleanField(default=False)
     Sent_by = models.CharField(max_length=200)
     command_list = ArrayField(models.CharField(max_length=20), null=True, blank=True)
     Validation_failed = models.BooleanField(default=True)
-    # obsolete?
-    #embedded_file_format = models.CharField(max_length=20, null=True, blank=True)
-    #embedded_file = models.BinaryField(null=True, blank=True)
+
+    def __str__(self):
+        return self.Timestamp
 
 class Test_stand_data(models.Model):
     class Meta:
@@ -136,7 +137,10 @@ class Test_stand_data(models.Model):
 
     Data_name = models.CharField(max_length=100, null=True)
     Data_points = JSONField(blank=True, null=True)
-    Inbound_teststand_package = models.ForeignKey(Inbound_teststand_package, on_delete=models.CASCADE)
+    Inbound_teststand_package = models.ForeignKey(Inbound_teststand_package, on_delete=models.CASCADE, related_name='data')
+
+    def __str__(self):
+        return '{} - {}'.format(self.Inbound_teststand_package, self.Data_name)
 
 class Test_stand_parameters(models.Model):
     class Meta:
@@ -144,12 +148,27 @@ class Test_stand_parameters(models.Model):
 
     Parameter_name = models.CharField(max_length=100, default="Empty")
     Parameter_value = models.CharField(max_length=100, default="Empty")
-    Inbound_teststand_package = models.ForeignKey(Inbound_teststand_package, on_delete=models.CASCADE)
+    Inbound_teststand_package = models.ForeignKey(Inbound_teststand_package, on_delete=models.CASCADE, related_name='parameters')
+
+    def __str__(self):
+        return '{} - {}'.format(self.Inbound_teststand_package, self.Parameter_name)
+
 
 # Idea for later use (no_delete & timestamp):
-# class ND_TS(models.Model):
-#     class Meta:
-#         verbose_name_plural = "Teststand NoDelete & TimeStamp"
-#
-#     TimeStamp = models.DateTimeField(auto_now_add='True')
-#     NoDelete = models.BooleanField(default=False)
+class ND_TS(models.Model):
+    class Meta:
+        verbose_name_plural = "NoDelete & TimeStamp"
+
+    ID = models.IntegerField(primary_key=True)
+    TimeStamp = models.CharField(max_length=200, null=True, blank=True)
+    NoDelete = models.BooleanField(default=False)
+    StatusCode = models.CharField(max_length=50, default="empty")
+
+    # def set_ts():
+    #     temp = ND_TS.objects.all()[0]
+    #     timestamp = datetime.now()
+    #     temp.TimeStamp = timestamp.strftime("%x-%I:%M:%S")
+    #     temp.save()
+
+    def __str__(self):
+        return self.TimeStamp

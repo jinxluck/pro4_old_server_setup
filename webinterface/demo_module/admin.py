@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Status, Result, Test, Inbound_teststand_package, Test_stand_parameters, Test_stand_data
+from .models import Status, Result, Test, Inbound_teststand_package, Test_stand_parameters, Test_stand_data, ND_TS
 
 # Register your models here.
 #@admin.register(Result)
@@ -15,3 +15,4 @@ admin.site.register(Test)
 admin.site.register(Inbound_teststand_package)
 admin.site.register(Test_stand_data)
 admin.site.register(Test_stand_parameters)
+admin.site.register(ND_TS)
